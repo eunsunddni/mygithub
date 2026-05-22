@@ -278,7 +278,7 @@ http://localhost:5173
 - 검색 기능
 
 ```md
-![도서 목록](screenshots/booklist.png)
+![도서 목록](./screenshots/booklist.png)
 ```
 
 ### 책 상세 화면
