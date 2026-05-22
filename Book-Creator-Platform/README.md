@@ -268,38 +268,32 @@ http://localhost:5173
 - 인기 도서 TOP 10
 - 인기 리뷰 TOP 10
 
-```md
 ![홈 화면](./screenshots/home.png)
-```
 
 ### 도서 목록 화면
 
 - 전체 도서 조회
 - 검색 기능
 
-```md
 ![도서 목록](./screenshots/booklist.png)
-```
 
 ### 책 상세 화면
 
 - 도서 상세 정보
 - 리뷰 작성 및 리뷰 목록
 
-```md
 ![책 상세](./screenshots/bookdetail.png)
+
 ![리뷰](./screenshots/bookreview.png)
-```
 
 ### 도서 등록 화면
 
 - 도서 정보 입력
 - AI 표지 생성
 
-```md
 ![도서 등록](./screenshots/createbookinfo.png)
+
 ![등록한 책 상세](./screenshots/createddetail.png)
-```
 
 ---
 
