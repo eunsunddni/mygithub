@@ -17,6 +17,23 @@ function BookDetailPage() {
   const [book, setBook] = useState(null);
   const [reviews, setReviews] = useState([]);
 
+  function getSafeUpdatedAt(item) {
+    if (!item?.createdAt) return item?.updatedAt || "";
+
+    const createdTime = new Date(item.createdAt).getTime();
+    const updatedTime = new Date(item.updatedAt).getTime();
+
+    if (!item.updatedAt || Number.isNaN(updatedTime)) {
+      return item.createdAt;
+    }
+
+    if (updatedTime < createdTime) {
+      return item.createdAt;
+    }
+
+    return item.updatedAt;
+  }
+
   async function loadDetail() {
     try {
       const [bookData, reviewData] = await Promise.all([
@@ -55,6 +72,32 @@ function BookDetailPage() {
       setBook(updatedBook);
     } catch (error) {
       alert("도서 좋아요 처리에 실패했습니다.");
+    }
+  }
+
+  async function handleDeleteBook() {
+    const ok = confirm("이 도서를 삭제하시겠습니까?");
+    if (!ok) return;
+
+    try {
+      const relatedReviews = await request(`/reviews?bookId=${book.id}`);
+
+      await Promise.all(
+        relatedReviews.map((review) =>
+          request(`/reviews/${review.id}`, {
+            method: "DELETE",
+          })
+        )
+      );
+
+      await request(`/books/${book.id}`, {
+        method: "DELETE",
+      });
+
+      alert("도서가 삭제되었습니다.");
+      navigate("/books");
+    } catch (error) {
+      alert("도서 삭제에 실패했습니다.");
     }
   }
 
@@ -140,12 +183,18 @@ function BookDetailPage() {
           <div className="detail-top-row">
             <h2>{book.title}</h2>
 
-            <button
-              className="sub-button"
-              onClick={() => navigate(`/create/${book.id}`)}
-            >
-              수정
-            </button>
+            <div className="detail-action-row">
+              <button
+                className="sub-button"
+                onClick={() => navigate(`/edit/${book.id}`)}
+              >
+                수정
+              </button>
+
+              <button className="danger-button" onClick={handleDeleteBook}>
+                삭제
+              </button>
+            </div>
           </div>
 
           <p className="book-author">{book.author}</p>
@@ -166,7 +215,7 @@ function BookDetailPage() {
 
           <div className="date-box">
             <p>생성일: {formatDate(book.createdAt)}</p>
-            <p>수정일: {formatDate(book.updatedAt)}</p>
+            <p>수정일: {formatDate(getSafeUpdatedAt(book))}</p>
           </div>
         </div>
       </section>
