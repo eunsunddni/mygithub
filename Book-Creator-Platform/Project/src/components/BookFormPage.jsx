@@ -3,6 +3,21 @@ import { useNavigate, useParams } from "react-router-dom";
 import { OPENAI_IMAGE_API_URL, request } from "./api.js";
 import { FALLBACK_COVER, formatDate, normalizeTags } from "./utils.js";
 
+function getSafeNowAfterCreated(createdAt) {
+  const now = new Date();
+  const created = new Date(createdAt);
+
+  if (!createdAt || Number.isNaN(created.getTime())) {
+    return now.toISOString();
+  }
+
+  if (now.getTime() < created.getTime()) {
+    return created.toISOString();
+  }
+
+  return now.toISOString();
+}
+
 function BookFormPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -115,7 +130,7 @@ ${content}
       }
 
       setCoverImageUrl(`data:image/png;base64,${b64Json}`);
-      setUpdatedAt(new Date().toISOString());
+      setUpdatedAt(getSafeNowAfterCreated(originalBook?.createdAt || createdAt));
     } catch (error) {
       alert("AI 표지 생성에 실패했습니다. API Key, 모델명, 사용량을 확인하세요.");
     } finally {
@@ -141,7 +156,7 @@ ${content}
       return;
     }
 
-    const now = new Date().toISOString();
+    const now = getSafeNowAfterCreated(originalBook?.createdAt || createdAt);
 
     const payload = {
       title: title.trim(),
@@ -291,8 +306,7 @@ ${content}
           </div>
 
           <p className="help-text">
-            API 요청은 실습 안정성을 위해 1024x1536을 사용합니다. 화면에서는
-            3:4 비율로 표시합니다. 정확히 1080x1440 파일이 필요하면 별도 리사이즈가 필요합니다.
+            API 요청은 안정성을 위해 1024x1536을 사용합니다.
           </p>
         </section>
       </form>
