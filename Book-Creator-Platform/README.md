@@ -282,7 +282,7 @@ http://localhost:5173
 - 도서 상세 정보
 - 리뷰 작성 및 리뷰 목록
 
-![책 상세](./screenshots/bookdetail(2).png)
+![책 상세](./screenshots/bookdetail.png)
 
 ![리뷰](./screenshots/bookreview.png)
 
